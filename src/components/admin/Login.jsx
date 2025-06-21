@@ -1,9 +1,34 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../../context/appContext.jsx';
+import toast from 'react-hot-toast';
+
+
 
 const Login = () => {
 
-  const handleSubmit = (e) => {
+  const {axios,setToken} = useAppContext();
+
+  const handleSubmit =async (e) => {
     e.preventDefault();
+    try{
+      const {data} = await axios.post('/api/admin/login', {
+        email,
+        password
+      })    
+      if(data.success){
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+        navigate("/admin");
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("An error occurred while logging in. Please try again.");
+    }
   } 
 
   const [email, setEmail] = useState('')

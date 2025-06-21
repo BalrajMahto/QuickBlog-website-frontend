@@ -5,9 +5,14 @@ import Navbar from '../components/Navbar'
 import Moment from 'moment'
 import Footer from '../components/Footer'
 import Loader from '../components/Loader'
+import { useAppContext } from '../context/appContext'
+import toast from 'react-hot-toast'
 
 const Blog = () => {
   const { id } = useParams()
+
+  const {axios} = useAppContext()
+
   const [data, setData] = useState(null)
   const [comments, setComments] = useState([])
 
@@ -16,16 +21,51 @@ const Blog = () => {
 
 
   const fetchBlogData = async () => {
-    const data = blog_data.find((item) => item._id === id)
-    setData(data)
+    try {
+      const { data } = await axios.get(`/api/blog/${id}`)
+      if (data.success) {
+        setData(data.blog)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error("Error fetching blog data:", error)
+    }
   }
 
   const fetchComments = async () => {
-    setComments(comments_data)
+    try{
+      const { data } = await axios.post('/api/blog/comments',{blogId: id})
+      if (data.success) {
+        setComments(data.comments)
+      } else {
+        toast.error(data.message)
+      }
+    }catch (error) {
+      toast.error("Error fetching comments:", error)
+    }
   }
 
   const addComment = async (e) => {
     e.preventDefault()
+    try {
+      const { data } = await axios.post('/api/blog/add-comment', {
+        blog: id,
+        name,
+        content
+      })
+      if (data.success) {
+        toast.success("Comment added successfully")
+        setName('')
+        setContent('')
+        fetchComments() // Refresh comments after adding a new one
+      } else {
+        toast.error(data.message)
+      }
+      
+    } catch (error) {
+      
+    }
   }
 
   useEffect(() => {
@@ -70,8 +110,8 @@ const Blog = () => {
         <div className='max-w-3xl mx-auto'> 
           <p className='font-semibold mb-4'>Add your comment</p>
           <form onSubmit={addComment} className='flex flex-col items-start gap-4 max-w-lg'>
-            <input onChange={()=>setName(e.target.value)} value={name} type="text" placeholder='Your Name' className='w-full p-2 border border-gray-300 rounded outline-none' required />
-            <textarea onChange={()=>setContent(e.target.value)} value={content} placeholder='write your comment' required className='w-full p-2 border border-gray-300 rounded outline-none h-48'></textarea>
+            <input onChange={(e)=>setName(e.target.value)} value={name} type="text" placeholder='Your Name' className='w-full p-2 border border-gray-300 rounded outline-none' required />
+            <textarea onChange={(e)=>setContent(e.target.value)} value={content} placeholder='write your comment' required className='w-full p-2 border border-gray-300 rounded outline-none h-48'></textarea>
             <button type="submit" className='bg-primary text-white rounded p-2 px-8 hover:scale-102 transition-all cursor-pointer'>Submit</button>
           </form>
 
