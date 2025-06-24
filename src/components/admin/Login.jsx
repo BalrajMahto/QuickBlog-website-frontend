@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 const Login = () => {
 
   const {axios,setToken} = useAppContext();
+  const navigate = useNavigate()
 
   const handleSubmit =async (e) => {
     e.preventDefault();
