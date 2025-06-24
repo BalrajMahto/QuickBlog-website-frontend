@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { assets, dashboard_data } from '../../assets/assets'
-import BlogTableitem from '../../components/admin/BlogTableitem'
+import BlogTableitem from '../../components/admin/BlogTableItem'
 import { useAppContext } from '../../context/appContext'
 
 const Dashboard = () => {
@@ -35,7 +35,7 @@ const Dashboard = () => {
         <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition '>
           <img src={assets.dashboard_icon_1} alt="" />
           <div>
-            <p className='text-xl font-semibold text-gray-600'>{dashboardData.blogs}</p>
+            <p className='text-xl font-semibold text-gray-600'>{dashboardData.blog}</p>
             <p className='text-gray-400 font-light'>Blogs</p>
           </div>
         </div>
