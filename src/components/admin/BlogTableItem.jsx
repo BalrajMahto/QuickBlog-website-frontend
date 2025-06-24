@@ -1,4 +1,3 @@
-import React from 'react'
 import { assets } from '../../assets/assets';
 import { useAppContext } from '../../context/appContext';
 import toast from 'react-hot-toast';
@@ -29,8 +28,8 @@ const BlogTableitem = ({blog,fetchBlogs,index}) => {
 
     const togglePublish = async () => {
       try{
-        const {data} = await axios.post('/api/blog/toggle-publish',{id:blog._id})
-         if(data.success){
+        const {data} = await axios.post(`/api/blog/toggle-publish?id=${blog?._id}`)
+        if(data.success){
           toast.success(data.message)
           await fetchBlogs()
         }else{
@@ -54,7 +53,6 @@ const BlogTableitem = ({blog,fetchBlogs,index}) => {
             <button onClick={togglePublish} className='border px-2 py-0.5 mt-1 rounded cursor-pointer'>{blog.isPublished ? 'Unpublish' : 'Publish'}</button>
             <img src={assets.cross_icon} onClick={deleteBlog} className='w-8 hover:scale-110 transition-all cursor-pointer' alt="" />
         </td>
-
     </tr>
   )
 }
