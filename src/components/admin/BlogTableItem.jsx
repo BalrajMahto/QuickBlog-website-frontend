@@ -1,8 +1,10 @@
 import { assets } from '../../assets/assets';
 import { useAppContext } from '../../context/appContext';
 import toast from 'react-hot-toast';
+import React from 'react'
 
-const BlogTableitem = ({blog,fetchBlogs,index}) => {
+
+const BlogTableItem = ({blog,fetchBlogs,index}) => {
 
     const {title,createdAt} = blog;
     const BlogDate = new Date(createdAt)
@@ -12,7 +14,7 @@ const BlogTableitem = ({blog,fetchBlogs,index}) => {
       const confirm = window.confirm('are you sure to delete this blog? ')
       if(!confirm) return;
       try{
-        const {data} = await axios.post('/api/blog/delete',{id:blog._id})
+        const {data} = await axios.post('/api/blog/delete',{id: blog._id})
         if(data.success){
           toast.success(data.message)
           await fetchBlogs()
@@ -28,7 +30,7 @@ const BlogTableitem = ({blog,fetchBlogs,index}) => {
 
     const togglePublish = async () => {
       try{
-        const {data} = await axios.post(`/api/blog/toggle-publish?id=${blog?._id}`)
+        const { data } = await axios.post(`/api/blog/toggle-publish/${blog._id}`);
         if(data.success){
           toast.success(data.message)
           await fetchBlogs()
@@ -40,7 +42,8 @@ const BlogTableitem = ({blog,fetchBlogs,index}) => {
       toast.error(error.message)
     }
   }
-
+    
+  
   return (
     <tr className='border-y border-gray-300'>
         <th className='px-2 py-4'>{index}</th>
@@ -57,4 +60,4 @@ const BlogTableitem = ({blog,fetchBlogs,index}) => {
   )
 }
 
-export default BlogTableitem
+export default BlogTableItem

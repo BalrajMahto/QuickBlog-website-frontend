@@ -17,9 +17,9 @@ const Layout = () => {
 }
 
   const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    setIsAdding(true);
     try {
+      e.preventDefault();
+      setIsAdding(true);
       const token = localStorage.getItem("token");
       if (!token) {
         toast.error("You must be logged in to add a blog.");
