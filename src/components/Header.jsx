@@ -67,12 +67,13 @@ const Header = () => {
             </button>
             </div>
           </form>
-          <div className='text-center'>
-           {
-            input && <button onClick={onClear} className='border font-light text-xs py-1 px-3 rounded-sm shadow-custom-sm cursor-pointer'>Clear search</button>
-           }
-            </div>
-
+         <div className='text-center mt-2 sm:mt-4'>
+            {input && (
+              <button onClick={onClear} className='border text-xs py-1 px-3 rounded-sm shadow-custom-sm cursor-pointer hover:border-red-500 sm:text-sm sm:px-4'>
+              Clear search
+              </button>
+            )}
+          </div>
 
         </div>
         <img src={assets.gradientBackground} alt="" className="absolute -top-[50px] z-[-1] opacity-50"/>

@@ -19,13 +19,13 @@ const Dashboard = () => {
       const {data} = await axios.get('/api/admin/dashboard')
       data.success ? setDashboardData(data.dashboardData) : toast.error(data.message)
     }catch(error){
-      toast.error(error.data?.data?.message)
+      toast.error(error.message)
     }
   }
 
   useEffect(() => {
     fetchDashboard()
-  })
+  }, []);
 
   return (
 

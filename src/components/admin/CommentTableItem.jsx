@@ -1,6 +1,8 @@
 import React from 'react'
 import { assets } from '../../assets/assets';
 import { useAppContext } from '../../context/appContext';
+import toast from 'react-hot-toast';
+
 
 const CommentTableItem = ({comment,fetchComments}) => {
 
@@ -11,7 +13,7 @@ const CommentTableItem = ({comment,fetchComments}) => {
 
     const approveComment = async () =>{
       try{
-        const {data} = await axios.post('api/admin/approve-comment',{id:_id})
+        const {data} = await axios.post('api/admin/approve-comment',{id: _id})
         if(data.success){
           toast.success(data.message)
           fetchComments()
@@ -29,7 +31,7 @@ const CommentTableItem = ({comment,fetchComments}) => {
         const confirm = window.confirm("are you sure to delete this comment.")
         if(!confirm) return;
 
-        const {data} = await axios.post('api/admin/delete-comment',{id:_id})
+        const {data} = await axios.post('api/admin/delete-comment',{id: _id})
         if(data.success){
           toast.success(data.message)
           fetchComments()
@@ -41,8 +43,7 @@ const CommentTableItem = ({comment,fetchComments}) => {
 
       }
     }
-
-
+    
 
   return (
     <tr className='order-y border-gray-300'>

@@ -2,10 +2,14 @@ import React, { useState, useEffect, useRef } from 'react'
 import { assets, blogCategories } from '../../assets/assets'
 import Quill from 'quill'
 import toast from 'react-hot-toast'
+import {parse} from 'marked'
 import axios from 'axios'
+import { useAppContext } from '../../context/appContext'
 
 const AddBlog = () => {
+
   const [isAdding, setIsAdding] = useState(false);
+  const [Loading, setLoading] = useState(false);
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
@@ -17,6 +21,24 @@ const AddBlog = () => {
 
   const generateContent = async () => {
     // Logic to generate content using AI
+    if(!title) return toast.error("Please enter a title before generating content.");
+
+    try {
+      setLoading(true);
+      const {data} = await axios.post('/api/blog/generate', {prompt: title});
+      if (data.success) {
+        quillRef.current.root.innerHTML = parse(data.content);
+        toast.success("Content generated successfully");
+      } else {
+        toast.error(data.message || "Failed to generate content");
+      }
+      
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "An error occurred while generating content. Please try again.");
+    }
+    finally {
+      setLoading(false);
+    }
   }
 
   const onSubmitHandler = async (e) => {
@@ -91,12 +113,30 @@ const AddBlog = () => {
         <p className='mt-4'>Blog description</p>
         <div className='max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative'>
           <div ref={editorRef}></div>
-          <button onClick={generateContent} type='button' className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer '>
+          {Loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-blue-100/20 z-10 backdrop-blur-sm">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 rounded-full border-4 border-blue-400 border-t-transparent animate-spin"></div>
+                    <div className="absolute inset-2 rounded-full border-4 border-blue-300 border-b-transparent animate-spin-slow"></div>
+                  </div>
+                  <p className="text-blue-700 font-medium text-sm tracking-wide animate-pulse">
+                    AI is generating your blog content...
+                  </p>
+                </div>
+              </div>
+            )}
+        <button
+          disabled={Loading}
+          onClick={generateContent}
+          type='button'
+          className='mt-4 sm:mt-0 sm:absolute sm:bottom-1 sm:right-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer'>
             Generate with AI
-          </button>
+        </button>
+
         </div>
 
-        <p className='mt-4'>Blog category</p>
+        <p className='mt-10 sm:mt-4'>Blog category</p>
         <select onChange={(e) => setCategory(e.target.value)} name="category" className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded' value={category}>
           <option value="">Select category</option>
           {blogCategories.map((item, index) => {
